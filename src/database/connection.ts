@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import envconfig from "../confug/config";
+import envconfig from "../config/config";
 
 const sequelize = new Sequelize({
   database: envconfig.dbname, //database  ko name
