@@ -1,8 +1,8 @@
 import express from "express";
 const app = express();
+import authRoute from './route/globals/auth/authRoute'
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+app.use(express.json())
+ app.use('/api',authRoute)
 
 export default app;

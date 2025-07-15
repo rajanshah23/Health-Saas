@@ -15,11 +15,10 @@ class User extends Model {
   })
   declare id: string;
 
-
   @Column({
     type: DataType.STRING,
   })
-  declare Username: string;
+  declare username: string;
 
 
   @Column({
