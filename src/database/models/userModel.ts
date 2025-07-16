@@ -5,9 +5,7 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
   modelName: "User",
   timestamps: true,
 })
-
 class User extends Model {
-
   @Column({
     primaryKey: true,
     type: DataType.UUID,
@@ -20,18 +18,29 @@ class User extends Model {
   })
   declare username: string;
 
-
   @Column({
     type: DataType.STRING,
   })
   declare email: string;
-
 
   @Column({
     type: DataType.STRING,
   })
   declare password: string;
 
+  @Column({
+    type: DataType.ENUM(
+      "admin",
+      "doctor",
+      "staff",
+      "pharmacist",
+      "lab",
+      "receptionist"
+    ),
+
+    defaultValue: "admin", // default role admin
+  })
+  declare role: string;
 }
 
 export default User;

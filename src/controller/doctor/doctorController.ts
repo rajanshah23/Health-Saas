@@ -35,7 +35,9 @@ class doctorController {
      doctorAddress VARCHAR(256) NOT NULL,
      doctorSpecialization VARCHAR(256) NOT NULL,
      doctorQualification VARCHAR(256) NOT NULL,
-     doctorExperience VARCHAR(256) NOT NULL
+     doctorExperience VARCHAR(256) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
     res.status(201).json({
         message:"Doctor table created successfully"
