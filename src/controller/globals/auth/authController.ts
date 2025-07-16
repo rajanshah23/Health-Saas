@@ -64,11 +64,11 @@ class AuthController {
       );
       if (isPasswordMatched) {
         const token = jwt.sign({ id: data[0].id },"hahaha", {
-          expiresIn: "2min",
+          expiresIn: "30d",
         });
         res.cookie("jwtToken", token);
         return res.status(201).json({
-          message: "Login Successfull",
+          message: "Login Successfull",token,
         });
       } else {
         res.status(400).json({
