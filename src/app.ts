@@ -1,12 +1,12 @@
 import express from "express";
 const app = express();
 import authRoute from "./route/globals/auth/authRoute";
-import doctorRoute from "./route/doctor/doctorRoute";
+import clinicRoute from "./route/clinic/clinicRoute";
 
 
 
 app.use(express.json());
 app.use("/api", authRoute);
-app.use("/api", doctorRoute);
+app.use("/api", clinicRoute);
 
 export default app;

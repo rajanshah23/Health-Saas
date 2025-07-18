@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User from "../database/models/userModel";
-import { IExtended } from "../types/type";
+import { IExtendedRequest } from "../types/type";
 class Middleware {
-  static async isLoggedIn(req: IExtended, res: Response, next: NextFunction) {
+  static async isLoggedIn(req: IExtendedRequest, res: Response, next: NextFunction) {
     //check user is login or not
     //check token
     const token = req.headers.authorization;

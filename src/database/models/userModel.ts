@@ -29,6 +29,11 @@ class User extends Model {
   declare password: string;
 
   @Column({
+    type:DataType.STRING,
+  })
+  declare currentclinicNumber:string;
+
+  @Column({
     type: DataType.ENUM(
       "admin",
       "doctor",

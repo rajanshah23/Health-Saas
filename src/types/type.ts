@@ -1,8 +1,10 @@
 import { Request } from "express"
 
- export interface IExtended extends Request{
+ export interface IExtendedRequest extends Request{
     user?:{
+        id:string,
         email:string,
         username:string,
     };
+    currentclinicNumber?:string | number
 }
