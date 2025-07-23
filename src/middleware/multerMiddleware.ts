@@ -12,4 +12,4 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-export default { multer, storage };
+export { multer, storage };

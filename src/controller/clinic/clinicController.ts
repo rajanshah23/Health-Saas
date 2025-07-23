@@ -18,22 +18,24 @@ class clinicController {
       clinicEstablishedDate,
       clinicWebsite,
     } = req.body;
+    const clinicImage=req.file? req.file.filename :null
     if (
       !clinicName ||
       !clinicEmail ||
       !clinicPhoneNumber ||
       !clinicAddress ||
       !clinicEstablishedDate ||
-      !clinicWebsite
+      !clinicWebsite ||!clinicImage
     ) {
       res.status(400).json({
         message:
-          "Please provide clinicName, clinicEmail, clinicPhoneNumber, clinicAddress,   clinicEstablishedDate,  clinicWebsite  ",
+          "Please provide clinicName, clinicEmail, clinicPhoneNumber, clinicAddress,   clinicEstablishedDate,  clinicWebsite,clinicImage  ",
       });
       return;
     }
     //database Query
     //CLIIC KO TABLE BANAKO
+    console.log(req.file)
     const clinicNumber = generateRandomNumber();
     await sequelize.query(`CREATE TABLE IF NOT EXISTS clinic_${clinicNumber}(
 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -44,12 +46,13 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
      clinicAddress VARCHAR(255) NOT NULL,
      clinicEstablishedDate DATE,
     clinicWebsite VARCHAR(255),
+    clinicImage text NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
     //CLINIC TABLE MA DATA INSERT GAREKO
     await sequelize.query(
-      `INSERT INTO clinic_${clinicNumber}(clinicName, clinicEmail, clinicPhoneNumber, clinicAddress,  clinicEstablishedDate,  clinicWebsite ) VALUES(?,?,?,?,?,?)`,
+      `INSERT INTO clinic_${clinicNumber}(clinicName, clinicEmail, clinicPhoneNumber, clinicAddress,  clinicEstablishedDate,  clinicWebsite,clinicImage ) VALUES(?,?,?,?,?,?,?)`,
       {
         replacements: [
           clinicName,
@@ -58,6 +61,7 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
           clinicAddress,
           clinicEstablishedDate,
           clinicWebsite,
+          clinicImage || "https://nepal.com/image/hello.png"
         ],
       }
     );
@@ -111,6 +115,7 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       doctorExperience INT,
       doctorAvailability JSON, -- { "monday": "10:00-16:00", ... }
       doctorIsAvailable BOOLEAN DEFAULT TRUE,
+      doctorImage TEXT NOT NULL,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )`);
@@ -135,6 +140,7 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     patientBloodGroup VARCHAR(10),
     patientemergencyContact VARCHAR(20),
     patientMedicalHistory TEXT,
+    patientImage TEXT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
@@ -148,8 +154,7 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   ) {
     const clinicNumber = req.user?.currentclinicNumber;
     await sequelize.query(`CREATE TABLE IF NOT EXISTS appointment_${clinicNumber}(
-id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     appointmentDate DATE NOT NULL,
     appointmentTime TIME NOT NULL,
     appointmentMode ENUM('Online', 'Offline') DEFAULT 'Offline',
@@ -175,6 +180,7 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     rportFileUrl VARCHAR(255),
     reportFileType ENUM('pdf', 'image', 'doc') DEFAULT 'pdf',
     reportReviewed BOOLEAN DEFAULT FALSE,
+    reportFile TEXT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
