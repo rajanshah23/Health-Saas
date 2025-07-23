@@ -9,6 +9,7 @@ class doctorController {
       doctorName,
       doctorEmail,
       doctorPhoneNumber,
+      doctorAddress,
       doctorSpecialization,
       doctorQualification,
       doctorExperience,
@@ -19,6 +20,7 @@ class doctorController {
       !doctorName ||
       !doctorEmail ||
       !doctorPhoneNumber ||
+      !doctorAddress ||
       !doctorSpecialization ||
       !doctorQualification ||
       !doctorExperience ||
@@ -27,22 +29,23 @@ class doctorController {
     ) {
       res.status(400).json({
         message:
-          "Please provide doctorName , doctorEmail, doctorPhoneNumber , doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable  ",
+          "Please provide doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable  ",
       });
       return;
     }
 
     await sequelize.query(
-      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail, doctorPhoneNumber , doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable) VALUES(?,?,?,?,?,?,?,?)`,
+      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable) VALUES(?,?,?,?,?,?,?,?,?)`,
       {
         replacements: [
           doctorName,
           doctorEmail,
           doctorPhoneNumber,
+          doctorAddress,
           doctorSpecialization,
           doctorQualification,
           doctorExperience,
-          doctorAvailability,
+          JSON.stringify(doctorAvailability), 
           doctorIsAvailable,
         ],
       }
