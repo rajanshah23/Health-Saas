@@ -18,7 +18,7 @@ class clinicController {
       clinicEstablishedDate,
       clinicWebsite,
     } = req.body;
-    const clinicImage=req.file? req.file.filename :null
+    const clinicImage=req.file? req.file.path :null
     if (
       !clinicName ||
       !clinicEmail ||
