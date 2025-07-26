@@ -15,6 +15,8 @@ class doctorController {
       doctorExperience,
       doctorAvailability,
       doctorIsAvailable,
+     patientId             
+
     } = req.body;
     if (
       !doctorName ||
@@ -25,17 +27,18 @@ class doctorController {
       !doctorQualification ||
       !doctorExperience ||
       !doctorAvailability ||
-      !doctorIsAvailable
+      !doctorIsAvailable ||
+      !patientId
     ) {
       res.status(400).json({
         message:
-          "Please provide doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable  ",
+          "Please provide doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable ,patientId ",
       });
       return;
     }
 
     await sequelize.query(
-      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable) VALUES(?,?,?,?,?,?,?,?,?)`,
+      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable,patientId) VALUES(?,?,?,?,?,?,?,?,?,?)`,
       {
         replacements: [
           doctorName,
@@ -47,6 +50,7 @@ class doctorController {
           doctorExperience,
           JSON.stringify(doctorAvailability), 
           doctorIsAvailable,
+          patientId
         ],
       }
     );
@@ -84,7 +88,7 @@ class doctorController {
     const clinicNumber = req.user?.currentclinicNumber;
     //sabai doctor haru ko listing
     const doctors = await sequelize.query(
-      `SELECT * FROM doctor_${clinicNumber}`
+      `SELECT * FROM doctor_${clinicNumber} JOIN patient_${clinicNumber} ON doctor_${clinicNumber}.patientId=patient_${clinicNumber}.id  `
     );
     res.status(200).json({
       message: "Doctor Fetched Successfully",
