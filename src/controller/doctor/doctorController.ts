@@ -1,5 +1,5 @@
-import { Response } from "express";
-import { IExtendedRequest } from "../../types/type";
+import {Response} from "express";
+import {IExtendedRequest} from "../../types/type";
 import sequelize from "../../database/connection";
 
 class doctorController {
@@ -15,7 +15,7 @@ class doctorController {
       doctorExperience,
       doctorAvailability,
       doctorIsAvailable,
-     patientId             
+  
 
     } = req.body;
     if (
@@ -27,18 +27,18 @@ class doctorController {
       !doctorQualification ||
       !doctorExperience ||
       !doctorAvailability ||
-      !doctorIsAvailable ||
-      !patientId
+      !doctorIsAvailable  
+    
     ) {
       res.status(400).json({
         message:
-          "Please provide doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable ,patientId ",
+          "Please provide doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable  ",
       });
       return;
     }
 
     await sequelize.query(
-      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable,patientId) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable ) VALUES(?,?,?,?,?,?,?,?,? )`,
       {
         replacements: [
           doctorName,
@@ -48,9 +48,9 @@ class doctorController {
           doctorSpecialization,
           doctorQualification,
           doctorExperience,
-          JSON.stringify(doctorAvailability), 
+          JSON.stringify(doctorAvailability),
           doctorIsAvailable,
-          patientId
+          
         ],
       }
     );
@@ -70,10 +70,8 @@ class doctorController {
         replacements: [doctorId],
       }
     );
-    if (doctorData) {
-      res.status(400).json({
-        message: "No doctor with that Id",
-      });
+    if (!doctorData || doctorData[0].length === 0) {
+      return res.status(404).json({ message: "No doctor with that Id" });
     }
     //Doctor lai uudai dini  , i mean delete gardini
     await sequelize.query(`DELETE FROM doctor_${clinicNumber} where id=?`, {
@@ -88,7 +86,7 @@ class doctorController {
     const clinicNumber = req.user?.currentclinicNumber;
     //sabai doctor haru ko listing
     const doctors = await sequelize.query(
-      `SELECT * FROM doctor_${clinicNumber} JOIN patient_${clinicNumber} ON doctor_${clinicNumber}.patientId=patient_${clinicNumber}.id  `
+      `SELECT * FROM doctor_${clinicNumber}`
     );
     res.status(200).json({
       message: "Doctor Fetched Successfully",
