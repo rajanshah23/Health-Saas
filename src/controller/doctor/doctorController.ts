@@ -1,6 +1,8 @@
 import {Response} from "express";
 import {IExtendedRequest} from "../../types/type";
 import sequelize from "../../database/connection";
+import clinicController from "../clinic/clinicController";
+import { QueryTypes } from "sequelize";
 
 class doctorController {
   static async createDoctor(req: IExtendedRequest, res: Response) {
@@ -86,7 +88,8 @@ class doctorController {
     const clinicNumber = req.user?.currentclinicNumber;
     //sabai doctor haru ko listing
     const doctors = await sequelize.query(
-      `SELECT * FROM doctor_${clinicNumber}`
+      `SELECT * FROM doctor_${clinicNumber} JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.doctorId=doctor_${
+      clinicNumber}.id`,{type:QueryTypes.SELECT}
     );
     res.status(200).json({
       message: "Doctor Fetched Successfully",

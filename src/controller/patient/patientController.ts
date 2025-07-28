@@ -81,7 +81,7 @@ class patientController {
         const clinicNumber = req.user?.currentclinicNumber;
         //sabai patient haru ko listing
         const patients = await sequelize.query(
-            `SELECT * FROM patient_${clinicNumber}`,{type:QueryTypes.SELECT}
+            `SELECT * FROM patient_${clinicNumber} JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.patientId=patient_${clinicNumber}.id`,{type:QueryTypes.SELECT}
         );
         res.status(200).json({
             message: "patient Fetched Successfully",

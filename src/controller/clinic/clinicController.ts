@@ -114,7 +114,6 @@ class clinicController {
       doctorAvailability JSON, -- { "monday": "10:00-16:00", ... }
       doctorIsAvailable BOOLEAN DEFAULT TRUE,
       doctorImage TEXT NOT NULL,
-      patientId VARCHAR(36) NOT NULL REFERENCES doctor_${clinicNumber} (id),
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )`);
@@ -158,6 +157,8 @@ class clinicController {
     appointmentMode ENUM('Online', 'Offline') DEFAULT 'Offline',
     appointmentStatus ENUM('Scheduled', 'Completed', 'Cancelled') DEFAULT 'Scheduled',
     appointmentNotes TEXT,
+    doctorId VARCHAR(36) NOT NULL REFERENCES doctor_${clinicNumber} (id),
+    patientId VARCHAR(36) NOT NULL REFERENCES patient_${clinicNumber} (id),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
