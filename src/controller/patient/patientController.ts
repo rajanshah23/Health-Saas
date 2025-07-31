@@ -62,7 +62,7 @@ class patientController {
                 replacements: [patientId],
             }
         );
-        if (patientData) {
+        if (!patientData || patientData.length === 0) {
             res.status(400).json({
                 message: "No patient with that Id",
             });
@@ -81,7 +81,7 @@ class patientController {
         const clinicNumber = req.user?.currentclinicNumber;
         //sabai patient haru ko listing
         const patients = await sequelize.query(
-            `SELECT * FROM patient_${clinicNumber} JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.patientId=patient_${clinicNumber}.id`,{type:QueryTypes.SELECT}
+            `SELECT * FROM patient_${clinicNumber}  LEFT JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.patientId=patient_${clinicNumber}.id`,{type:QueryTypes.SELECT}
         );
         res.status(200).json({
             message: "patient Fetched Successfully",

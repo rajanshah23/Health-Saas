@@ -75,7 +75,7 @@ class doctorController {
     if (!doctorData || doctorData[0].length === 0) {
       return res.status(404).json({ message: "No doctor with that Id" });
     }
-    //Doctor lai uudai dini  , i mean delete gardini
+    //Doctor lai  delete garney
     await sequelize.query(`DELETE FROM doctor_${clinicNumber} where id=?`, {
       replacements: [doctorId],
     });
@@ -88,7 +88,7 @@ class doctorController {
     const clinicNumber = req.user?.currentclinicNumber;
     //sabai doctor haru ko listing
     const doctors = await sequelize.query(
-      `SELECT * FROM doctor_${clinicNumber} JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.doctorId=doctor_${
+      `SELECT * FROM doctor_${clinicNumber} LEFT JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.doctorId=doctor_${
       clinicNumber}.id`,{type:QueryTypes.SELECT}
     );
     res.status(200).json({

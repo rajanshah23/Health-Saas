@@ -175,10 +175,13 @@ class clinicController {
   id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     reportType VARCHAR(255),
     reportResult VARCHAR(255),
-    rportFileUrl VARCHAR(255),
+    reportFileUrl VARCHAR(255),
     reportFileType ENUM('pdf', 'image', 'doc') DEFAULT 'pdf',
     reportReviewed BOOLEAN DEFAULT FALSE,
     reportFile TEXT NOT NULL,
+    patientId VARCHAR(36) NOT NULL REFERENCES patient_${clinicNumber}(id),
+    doctorId VARCHAR(36) REFERENCES doctor_${clinicNumber}(id),
+    appointmentId VARCHAR(36) REFERENCES appointment_${clinicNumber}(id),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);

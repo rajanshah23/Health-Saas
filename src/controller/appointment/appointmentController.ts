@@ -41,7 +41,7 @@ class appointmentController {
         const { appointmentDate, appointmentTime, appointmentMode, appointmentStatus, appointmentNotes,doctorId,patientId } = req.body
         const appointmentId = req.params.id
         //update gareko ko appointment
-        await sequelize.query(`UPDATE  appointment_${clinicNumber} SET appointmentDate=?,appointmentTime=?,appointmnetMode=?,appointmentStatus=?,appointmentNotes=?,doctorId=?,patientId=?`, {
+        await sequelize.query(`UPDATE  appointment_${clinicNumber} SET appointmentDate=?,appointmentTime=?,appointmentMode=?,appointmentStatus=?,appointmentNotes=?,doctorId=?,patientId=? WHERE id=?`, {
             type: QueryTypes.UPDATE,
             replacements: [appointmentDate, appointmentTime, appointmentMode, appointmentStatus, appointmentNotes,doctorId,patientId,appointmentId]
         })
@@ -54,11 +54,12 @@ class appointmentController {
     static async deleteAppointment(req: IExtendedRequest, res: Response) {
         const clinicNumber = req.user?.currentclinicNumber
         const appointmentId = req.params.id
-        //checking th eappointment exist with that id
+        //checking the appointment exist with that id
         const appointmentData = await sequelize.query(`SELECT * FROM appointment_${clinicNumber} where id=?`, {
-            replacements: [appointmentId]
+             type:QueryTypes.SELECT,
+            replacements: [appointmentId]  
         })
-        if (!appointmentData || appointmentData[0].length === 0) {
+        if (!appointmentData || appointmentData.length === 0) {
             return res.status(400).json({
                 message: "No appointment with that Id"
             })
