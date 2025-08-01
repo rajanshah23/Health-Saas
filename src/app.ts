@@ -6,7 +6,8 @@ import doctorRoute from "./route/doctor/doctorRoute"
 import patientRoute from './route/patient/patientRoute'
 import appointmentRoute from './route/appointment/appointmentRoute'
 import reportRoute from  './route/report/reportRoute'
-
+import smsRoute from "./route/SMS/smsRoute";
+ 
 app.use(express.json());
 app.use("/api", authRoute);
 app.use("/api", clinicRoute);
@@ -14,4 +15,5 @@ app.use("/api",doctorRoute)
 app.use('/api',patientRoute)
 app.use('/api',appointmentRoute)
 app.use('/api',reportRoute)
+app.use('/api', smsRoute);
 export default app;
