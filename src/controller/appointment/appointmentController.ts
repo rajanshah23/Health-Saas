@@ -2,6 +2,9 @@ import { Response } from "express"
 import { IExtendedRequest } from "../../types/type"
 import sequelize from "../../database/connection"
 import {QueryTypes } from "sequelize"
+import { getAppointmentConfirmationHTML } from "../../utils/patientAppointmentConfirm"
+import sendMail from "../../services/sendMail"
+import { getDoctorAppointmentEmailHTML } from "../../utils/doctroAppointmentConfirm"
 
 
 
@@ -20,6 +23,80 @@ class appointmentController {
             type: QueryTypes.INSERT,
             replacements: [appointmentDate, appointmentTime, appointmentMode, appointmentStatus, appointmentNotes,doctorId,patientId]
         })
+
+ // Fetching  doctor information
+    const doctorData: any = await sequelize.query(
+      `SELECT doctorName, doctorEmail FROM doctor_${clinicNumber} WHERE id = ?`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: [doctorId],
+      }
+    );
+
+    //fetching patient information
+    const patientData: any = await sequelize.query(
+      `SELECT patientName, patientEmail FROM patient_${clinicNumber} WHERE id = ?`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: [patientId],
+      }
+    );
+ 
+    //optional chaning
+    const doctorName = doctorData?.[0]?.doctorName || "Doctor";
+    const doctorEmail = doctorData?.[0]?.doctorEmail;
+    const patientName = patientData?.[0]?.patientName || "Patient";
+    const patientEmail = patientData?.[0]?.patientEmail;
+    
+console.log("Doctor data retrieved:", doctorData);
+console.log("Patient data retrieved:", patientData);
+console.log("Doctor email:", doctorEmail);
+console.log("Patient email:", patientEmail);
+console.log("Clinic number:", clinicNumber);
+console.log("Doctor ID:", doctorId);
+console.log("Patient ID:", patientId);
+    // Send  confirmation email to the patient  
+    if (patientEmail) {
+      try {
+        const emailHtml = getAppointmentConfirmationHTML(
+        patientName,
+        doctorName,
+        appointmentDate,
+        appointmentTime
+      );
+         await sendMail({
+        to: patientEmail ,
+        subject: `Appointment Confirmation with Dr. ${doctorName}`,
+        html: emailHtml,
+      });
+      console.log(`Email sent successfully to patient: ${patientEmail}`);
+      } catch (error) {
+        console.error("Patient email failed:", error);
+      }
+
+    
+    }
+//send  confirmation email to the doctor 
+     if (doctorEmail) {
+      try {
+        const emailHtml = getDoctorAppointmentEmailHTML(
+          doctorName,
+          patientName,
+          appointmentDate,
+          appointmentTime
+        );
+  
+        await sendMail({
+          to: doctorEmail ,
+          subject: ` New appointment Confirmation with ${patientName}`,
+          html: emailHtml,
+        });
+        console.log(`Email sent successfully to doctor: ${doctorEmail}`);
+      } catch (error) {
+         console.error("Doctor email failed:", error);
+      }
+    }
+
         res.status(201).json({
             message: "Appointment created Successfully"
         })

@@ -1,8 +1,10 @@
 import {Response} from "express";
 import {IExtendedRequest} from "../../types/type";
 import sequelize from "../../database/connection";
-import clinicController from "../clinic/clinicController";
-import { QueryTypes } from "sequelize";
+ import { QueryTypes } from "sequelize";
+import sendMail from "../../services/sendMail";
+import { getWelcomeEmailHTML } from "../../utils/doctorWelcomeEmailTemplate";
+ 
 
 class doctorController {
   static async createDoctor(req: IExtendedRequest, res: Response) {
@@ -56,6 +58,22 @@ class doctorController {
         ],
       }
     );
+ 
+const clinicData: any = await sequelize.query(
+      `SELECT clinicName FROM clinic_${clinicNumber} LIMIT 1`,
+      { type: QueryTypes.SELECT }
+    );
+    const clinicName = clinicData?.[0]?.clinicName || "Your Clinic";
+
+    // Send welcome email to doctor
+    const emailHtml = getWelcomeEmailHTML(doctorName, clinicName );
+
+    await sendMail({
+      to: doctorEmail,
+      subject: `Welcome to ${clinicName}`,
+      html: emailHtml,
+    });
+
     res.status(200).json({
       message: "Doctor created successfully",
     });

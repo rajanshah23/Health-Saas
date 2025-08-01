@@ -2,6 +2,8 @@ import { Response } from "express";
 import { IExtendedRequest } from "../../types/type";
 import sequelize from "../../database/connection";
 import { QueryTypes } from "sequelize";
+import { getPatientWelcomeEmailHTML } from "../../utils/patientWelcomeEmailTemplate";
+import sendMail from "../../services/sendMail";
 
 class patientController {
     static async createPatient(req: IExtendedRequest, res: Response) {
@@ -39,12 +41,30 @@ class patientController {
         await sequelize.query(
             `INSERT INTO patient_${clinicNumber}(patientName,patientGender,patientAge,patientEmail,patientphoneNumber,patientAddress,patientBloodGroup,patientemergencyContact,patientMedicalHistory,patientImage) VALUES(?,?,?,?,?,?,?,?,?,?)`,
             {
-                type:QueryTypes.INSERT,
+                type: QueryTypes.INSERT,
                 replacements: [
                     patientName, patientGender, patientAge, patientEmail, patientphoneNumber, patientAddress, patientBloodGroup, patientemergencyContact, patientMedicalHistory, patientImage
                 ],
             }
         );
+
+        const clinicData: any = await sequelize.query(
+            `SELECT clinicName FROM clinic_${clinicNumber} LIMIT 1`,
+            { type: QueryTypes.SELECT }
+        );
+        const clinicName = clinicData?.[0]?.clinicName || "Your Clinic";
+
+        // Send welcome email to doctor
+        const emailHtml = getPatientWelcomeEmailHTML(patientName, clinicName);
+
+        await sendMail({
+            to: patientEmail,
+            subject: `Welcome to ${clinicName}`,
+            html: emailHtml,
+        });
+
+
+
         res.status(200).json({
             message: "patient created successfully",
         });
@@ -58,7 +78,7 @@ class patientController {
         const patientData = await sequelize.query(
             `SELECT * FROM patient_${clinicNumber} where id =?`,
             {
-                 type:QueryTypes.SELECT,
+                type: QueryTypes.SELECT,
                 replacements: [patientId],
             }
         );
@@ -69,7 +89,7 @@ class patientController {
         }
         //patient lai uudai dini  , i mean delete gardini
         await sequelize.query(`DELETE FROM patient_${clinicNumber} where id=?`, {
-            type:QueryTypes.DELETE,
+            type: QueryTypes.DELETE,
             replacements: [patientId],
         });
         res.status(200).json({
@@ -81,7 +101,7 @@ class patientController {
         const clinicNumber = req.user?.currentclinicNumber;
         //sabai patient haru ko listing
         const patients = await sequelize.query(
-            `SELECT * FROM patient_${clinicNumber}  LEFT JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.patientId=patient_${clinicNumber}.id`,{type:QueryTypes.SELECT}
+            `SELECT * FROM patient_${clinicNumber}  LEFT JOIN appointment_${clinicNumber} ON appointment_${clinicNumber}.patientId=patient_${clinicNumber}.id`, { type: QueryTypes.SELECT }
         );
         res.status(200).json({
             message: "patient Fetched Successfully",
@@ -96,7 +116,7 @@ class patientController {
         const patient = await sequelize.query(
             `SELECT * FROM patient_${clinicNumber} where id=?`,
             {
-                type:QueryTypes.SELECT,
+                type: QueryTypes.SELECT,
                 replacements: [patientId],
             }
         );
@@ -106,39 +126,39 @@ class patientController {
         });
     }
 
-  static async updatePatient(req: IExtendedRequest, res: Response) {
-    const clinicNumber = req.user?.currentclinicNumber;
-    if (!clinicNumber) {
-        return res.status(400).json({ message: "Clinic number is missing" });
-    }
+    static async updatePatient(req: IExtendedRequest, res: Response) {
+        const clinicNumber = req.user?.currentclinicNumber;
+        if (!clinicNumber) {
+            return res.status(400).json({ message: "Clinic number is missing" });
+        }
 
-    const {
-        patientName,
-        patientGender,
-        patientAge,
-        patientEmail,
-        patientphoneNumber,
-        patientAddress,
-        patientBloodGroup,
-        patientemergencyContact,
-        patientMedicalHistory
-    } = req.body;
+        const {
+            patientName,
+            patientGender,
+            patientAge,
+            patientEmail,
+            patientphoneNumber,
+            patientAddress,
+            patientBloodGroup,
+            patientemergencyContact,
+            patientMedicalHistory
+        } = req.body;
 
-    const patientImage = req.file ? req.file.path : null;
-    const patientId = req.params.id;
+        const patientImage = req.file ? req.file.path : null;
+        const patientId = req.params.id;
 
-    if (
-        !patientName || !patientGender || !patientAge || !patientEmail ||
-        !patientphoneNumber || !patientAddress || !patientBloodGroup ||
-        !patientemergencyContact || !patientMedicalHistory || !patientImage
-    ) {
-        return res.status(400).json({
-            message: "All fields including image are required for update"
-        });
-    }
+        if (
+            !patientName || !patientGender || !patientAge || !patientEmail ||
+            !patientphoneNumber || !patientAddress || !patientBloodGroup ||
+            !patientemergencyContact || !patientMedicalHistory || !patientImage
+        ) {
+            return res.status(400).json({
+                message: "All fields including image are required for update"
+            });
+        }
 
-    await sequelize.query(
-        `UPDATE patient_${clinicNumber} SET  
+        await sequelize.query(
+            `UPDATE patient_${clinicNumber} SET  
             patientName = ?,
             patientGender = ?,
             patientAge = ?,      
@@ -150,28 +170,28 @@ class patientController {
             patientMedicalHistory = ?,
             patientImage = ?
         WHERE id = ?`,
-        {
-            type: QueryTypes.UPDATE,
-            replacements: [
-                patientName,
-                patientGender,
-                patientAge,
-                patientEmail,
-                patientphoneNumber,
-                patientAddress,
-                patientBloodGroup,
-                patientemergencyContact,
-                patientMedicalHistory,
-                patientImage,
-                patientId
-            ],
-        }
-    );
+            {
+                type: QueryTypes.UPDATE,
+                replacements: [
+                    patientName,
+                    patientGender,
+                    patientAge,
+                    patientEmail,
+                    patientphoneNumber,
+                    patientAddress,
+                    patientBloodGroup,
+                    patientemergencyContact,
+                    patientMedicalHistory,
+                    patientImage,
+                    patientId
+                ],
+            }
+        );
 
-    res.status(200).json({
-        message: "Patient updated successfully"
-    });
-}
+        res.status(200).json({
+            message: "Patient updated successfully"
+        });
+    }
 
 }
 export default patientController
