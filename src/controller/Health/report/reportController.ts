@@ -56,7 +56,7 @@ class reportController {
         );
 
 
-        // After inserting the report...
+     
 
         // Fetch doctor, patient, and admin email info
         const doctorData: any = await sequelize.query(
@@ -76,7 +76,7 @@ class reportController {
         const patientEmail = patientData?.[0]?.patientEmail;
   
 
-        // ✉️ Send to patient
+        // Send to patient
         if (patientEmail) {
             const html = getReportNotificationPatientHTML(patientName, reportType);
             await sendMail({
@@ -86,7 +86,7 @@ class reportController {
             });
         }
 
-        // ✉️ Send to doctor
+        //  Send to doctor
         if (doctorEmail) {
             const html = getReportNotificationDoctorHTML(doctorName, patientName, reportType);
             await sendMail({

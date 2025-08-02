@@ -4,6 +4,7 @@ import sequelize from "../../../database/connection";
  import { QueryTypes } from "sequelize";
 import sendMail from "../../../services/sendMail";
 import { getWelcomeEmailHTML } from "../../../utils/doctorWelcomeEmailTemplate";
+import generateRandomPassword from "../../../services/generteRandomPassword";
  
 
 class doctorController {
@@ -36,17 +37,18 @@ class doctorController {
     ) {
       res.status(400).json({
         message:
-          "Please provide doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable  ",
+          "Please provide doctorName , doctorEmail ,doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable  ",
       });
       return;
     }
-
+       const data= await generateRandomPassword.randomPassword(doctorName)
     await sequelize.query(
-      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail, doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable ) VALUES(?,?,?,?,?,?,?,?,? )`,
+      `INSERT INTO doctor_${clinicNumber}(doctorName , doctorEmail,doctorPassword,doctorPhoneNumber ,  doctorAddress, doctorSpecialization, doctorQualification, doctorExperience,doctorAvailability ,doctorIsAvailable ) VALUES(?,?,?,?,?,?,?,?,?,? )`,
       {
         replacements: [
           doctorName,
           doctorEmail,
+          data.hashedVersion,
           doctorPhoneNumber,
           doctorAddress,
           doctorSpecialization,
@@ -66,7 +68,7 @@ const clinicData: any = await sequelize.query(
     const clinicName = clinicData?.[0]?.clinicName || "Your Clinic";
 
     // Send welcome email to doctor
-    const emailHtml = getWelcomeEmailHTML(doctorName, clinicName );
+    const emailHtml = getWelcomeEmailHTML(doctorName, clinicName,data.plainVersion,String(clinicNumber),doctorEmail );
 
     await sendMail({
       to: doctorEmail,

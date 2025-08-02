@@ -106,6 +106,7 @@ class clinicController {
       id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
       doctorName VARCHAR(255) NOT NULL,
       doctorEmail VARCHAR(255) UNIQUE,
+      doctorPassword VARCHAR(255) NOT NULL,
       doctorPhoneNumber VARCHAR(255) UNIQUE,
       doctorAddress VARCHAR(255) NOT NULL,
       doctorSpecialization VARCHAR(255) NOT nULL,

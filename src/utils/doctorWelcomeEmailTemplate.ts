@@ -1,4 +1,5 @@
-export const getWelcomeEmailHTML = (doctorName: string, clinicName: string) => `
+export const getWelcomeEmailHTML = (doctorName: string, clinicName: string, tempPassword: string,
+  clinicNumber: string,doctorEmail:string) => `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
   <!-- Header -->
   <div style="background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%); padding: 40px 20px; text-align: center;">
@@ -14,7 +15,16 @@ export const getWelcomeEmailHTML = (doctorName: string, clinicName: string) => `
     <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
       We're thrilled to have you join <strong>${clinicName}</strong> — your personalized clinic dashboard is ready.
     </p>
-    
+    <div style="background: #f0f4f8; padding: 20px; border-radius: 8px; margin-top: 30px;">
+  <h3 style="color: #2d3748;">🔐 Your Login Credentials</h3>
+  <p style="color: #4a5568; font-size: 15px;">Please use the following credentials to log into your dashboard:</p>
+  <ul style="list-style: none; padding-left: 0;">
+    <li><strong>📧 Email:</strong> ${doctorEmail}</li>
+    <li><strong>🏥 Clinic Number:</strong> ${clinicNumber}</li>
+    <li><strong>🔑 Temporary Password:</strong> ${tempPassword}</li>
+  </ul>
+  <p style="color: #e53e3e; font-size: 13px;">Please change your password after your first login.</p>
+</div>
     <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
       As a valued member of our medical team, you now have access to your professional dashboard where you can:
     </p>

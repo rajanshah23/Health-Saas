@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../../../database/models/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import generateToken from "../../../services/generateJwtToken";
 
 class AuthController {
   static async registerUser(req: Request, res: Response) {
@@ -63,9 +64,7 @@ class AuthController {
         data[0].password
       );
       if (isPasswordMatched) {
-        const token = jwt.sign({ id: data[0].id },"hahaha", {
-          expiresIn: "30d",
-        });
+        const token=generateToken({id:data[0].id})
         res.cookie("jwtToken", token);
         return res.status(201).json({
           message: "Login Successfull",token,
