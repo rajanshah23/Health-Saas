@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import clinicController from "../../controller/clinic/clinicController";
+import clinicController from "../../controller/Health/clinic/clinicController";
 import Middleware from "../../middleware/middleware";
 import HandleError from "../../services/asyncErrorHnadler";
 // import { multer, storage } from "./../../middleware/multerMiddleware";

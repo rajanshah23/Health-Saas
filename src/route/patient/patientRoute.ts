@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 import Middleware from '../../middleware/middleware';
 import HandleError from '../../services/asyncErrorHnadler';
-import patientController from '../../controller/patient/patientController';
+import patientController from '../../controller/Health/patient/patientController';
 // import { multer, storage } from "./../../middleware/multerMiddleware";
 import multer from "multer";
 import { cloudinary,storage } from "../../services/cloudinaryConfig";

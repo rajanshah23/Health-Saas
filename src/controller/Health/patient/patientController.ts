@@ -1,9 +1,9 @@
 import { Response } from "express";
-import { IExtendedRequest } from "../../types/type";
-import sequelize from "../../database/connection";
+import { IExtendedRequest } from "../../../types/type";
+import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
-import { getPatientWelcomeEmailHTML } from "../../utils/patientWelcomeEmailTemplate";
-import sendMail from "../../services/sendMail";
+import { getPatientWelcomeEmailHTML } from "../../../utils/patientWelcomeEmailTemplate";
+import sendMail from "../../../services/sendMail";
 
 class patientController {
     static async createPatient(req: IExtendedRequest, res: Response) {

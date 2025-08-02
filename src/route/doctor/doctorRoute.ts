@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import Middleware from "../../middleware/middleware";
 import HandleError from "../../services/asyncErrorHnadler";
-import doctorController from "../../controller/doctor/doctorController";
+import doctorController from "../../controller/Health/doctor/doctorController";
 const router: Router = express.Router();
 
 router

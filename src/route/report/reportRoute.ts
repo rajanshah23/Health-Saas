@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 import Middleware from '../../middleware/middleware'
 import HandleError from '../../services/asyncErrorHnadler'
-import reportController from '../../controller/report/reportController'
+import reportController from '../../controller/Health/report/reportController'
 import upload from '../../middleware/multerUpload'
 
 const router: Router = express.Router()

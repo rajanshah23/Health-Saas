@@ -1,9 +1,9 @@
 import {Response} from "express";
-import {IExtendedRequest} from "../../types/type";
-import sequelize from "../../database/connection";
+import {IExtendedRequest} from "../../../types/type";
+import sequelize from "../../../database/connection";
  import { QueryTypes } from "sequelize";
-import sendMail from "../../services/sendMail";
-import { getWelcomeEmailHTML } from "../../utils/doctorWelcomeEmailTemplate";
+import sendMail from "../../../services/sendMail";
+import { getWelcomeEmailHTML } from "../../../utils/doctorWelcomeEmailTemplate";
  
 
 class doctorController {

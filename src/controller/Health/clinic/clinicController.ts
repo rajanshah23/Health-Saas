@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import sequelize from "../../database/connection";
-import generateRandomNumber from "../../services/generateRandomNumber";
-import User from "../../database/models/userModel";
-import { IExtendedRequest } from "../../types/type";
+import sequelize from "../../../database/connection";
+import generateRandomNumber from "../../../services/generateRandomNumber";
+import User from "../../../database/models/userModel";
+import { IExtendedRequest } from "../../../types/type";
 
 class clinicController {
   static async createclinic(

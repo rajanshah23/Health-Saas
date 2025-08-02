@@ -1,8 +1,11 @@
 import { Response } from "express";
-import { IExtendedRequest } from "../../types/type";
-import sequelize from "../../database/connection";
+import { IExtendedRequest } from "../../../types/type";
+import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
-
+import sendMail from "../../../services/sendMail";
+ 
+import { getReportNotificationPatientHTML } from "../../../utils/reportNotificationPatient";
+import { getReportNotificationDoctorHTML } from "../../../utils/reportNotificationDoctor";
 class reportController {
     //Create Report
     static async createReport(req: IExtendedRequest, res: Response) {
@@ -51,6 +54,49 @@ class reportController {
                 ],
             }
         );
+
+
+        // After inserting the report...
+
+        // Fetch doctor, patient, and admin email info
+        const doctorData: any = await sequelize.query(
+            `SELECT doctorName, doctorEmail FROM doctor_${clinicNumber} WHERE id = ?`,
+            { type: QueryTypes.SELECT, replacements: [doctorId] }
+        );
+
+        const patientData: any = await sequelize.query(
+            `SELECT patientName, patientEmail FROM patient_${clinicNumber} WHERE id = ?`,
+            { type: QueryTypes.SELECT, replacements: [patientId] }
+        );
+
+      
+        const doctorName = doctorData?.[0]?.doctorName || "Doctor";
+        const doctorEmail = doctorData?.[0]?.doctorEmail;
+        const patientName = patientData?.[0]?.patientName || "Patient";
+        const patientEmail = patientData?.[0]?.patientEmail;
+  
+
+        // ✉️ Send to patient
+        if (patientEmail) {
+            const html = getReportNotificationPatientHTML(patientName, reportType);
+            await sendMail({
+                to: patientEmail,
+                subject: `Your ${reportType} report is ready`,
+                html,
+            });
+        }
+
+        // ✉️ Send to doctor
+        if (doctorEmail) {
+            const html = getReportNotificationDoctorHTML(doctorName, patientName, reportType);
+            await sendMail({
+                to: doctorEmail,
+                subject: `New report for ${patientName}`,
+                html,
+            });
+        }
+ 
+
         res.status(201).json({ message: "Report created successfully" });
     }
 

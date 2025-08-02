@@ -1,10 +1,10 @@
 import { Response } from "express"
-import { IExtendedRequest } from "../../types/type"
-import sequelize from "../../database/connection"
+import { IExtendedRequest } from "../../../types/type"
+import sequelize from "../../../database/connection"
 import {QueryTypes } from "sequelize"
-import { getAppointmentConfirmationHTML } from "../../utils/patientAppointmentConfirm"
-import sendMail from "../../services/sendMail"
-import { getDoctorAppointmentEmailHTML } from "../../utils/doctroAppointmentConfirm"
+import { getAppointmentConfirmationHTML } from "../../../utils/patientAppointmentConfirm"
+import sendMail from "../../../services/sendMail"
+import { getDoctorAppointmentEmailHTML } from "../../../utils/doctroAppointmentConfirm"
 
 
 
