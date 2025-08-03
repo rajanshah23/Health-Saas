@@ -132,6 +132,7 @@ class clinicController {
     patientName VARCHAR(255) NOT NULL,
     patientGender VARCHAR(255) NOT NULL,
     patientAge INT NOT NULL,
+    patientPassword VARCHAR(255) NOT NULL,
     patientEmail VARCHAR(255),
     patientPhoneNumber VARCHAR(255) UNIQUE,
     patientAddress VARCHAR(255) NOT NULL,

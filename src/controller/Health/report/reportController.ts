@@ -4,8 +4,8 @@ import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
 import sendMail from "../../../services/sendMail";
  
-import { getReportNotificationPatientHTML } from "../../../utils/reportNotificationPatient";
-import { getReportNotificationDoctorHTML } from "../../../utils/reportNotificationDoctor";
+import { getReportNotificationPatientHTML } from "../../../utils/emailTemplate/reportNotificationPatient";
+import { getReportNotificationDoctorHTML } from "../../../utils/emailTemplate/reportNotificationDoctor";
 class reportController {
     //Create Report
     static async createReport(req: IExtendedRequest, res: Response) {

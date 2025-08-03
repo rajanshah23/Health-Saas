@@ -2,8 +2,9 @@ import { Response } from "express";
 import { IExtendedRequest } from "../../../types/type";
 import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
-import { getPatientWelcomeEmailHTML } from "../../../utils/patientWelcomeEmailTemplate";
+import { getPatientWelcomeEmailHTML } from "../../../utils/emailTemplate/patientWelcomeEmailTemplate";
 import sendMail from "../../../services/sendMail";
+import generateRandomPassword from "../../../services/generteRandomPassword";
 
 class patientController {
     static async createPatient(req: IExtendedRequest, res: Response) {
@@ -37,13 +38,13 @@ class patientController {
             });
             return;
         }
-
+        const data = await generateRandomPassword.randomPassword(patientName)
         await sequelize.query(
-            `INSERT INTO patient_${clinicNumber}(patientName,patientGender,patientAge,patientEmail,patientphoneNumber,patientAddress,patientBloodGroup,patientemergencyContact,patientMedicalHistory,patientImage) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+            `INSERT INTO patient_${clinicNumber}(patientName,patientGender,patientPassword,patientAge,patientEmail,patientphoneNumber,patientAddress,patientBloodGroup,patientemergencyContact,patientMedicalHistory,patientImage) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
             {
                 type: QueryTypes.INSERT,
                 replacements: [
-                    patientName, patientGender, patientAge, patientEmail, patientphoneNumber, patientAddress, patientBloodGroup, patientemergencyContact, patientMedicalHistory, patientImage
+                    patientName, patientGender, data.hashedVersion,patientAge, patientEmail, patientphoneNumber, patientAddress, patientBloodGroup, patientemergencyContact, patientMedicalHistory, patientImage
                 ],
             }
         );
@@ -54,16 +55,15 @@ class patientController {
         );
         const clinicName = clinicData?.[0]?.clinicName || "Your Clinic";
 
-        // Send welcome email to doctor
-        const emailHtml = getPatientWelcomeEmailHTML(patientName, clinicName);
+        // Send welcome email to patient
+        const emailHtml =
+            getPatientWelcomeEmailHTML(patientName, clinicName, data.plainVersion, String(clinicNumber), patientEmail);
 
         await sendMail({
             to: patientEmail,
             subject: `Welcome to ${clinicName}`,
             html: emailHtml,
         });
-
-
 
         res.status(200).json({
             message: "patient created successfully",
@@ -135,6 +135,7 @@ class patientController {
         const {
             patientName,
             patientGender,
+            patientPassword,
             patientAge,
             patientEmail,
             patientphoneNumber,
@@ -148,7 +149,7 @@ class patientController {
         const patientId = req.params.id;
 
         if (
-            !patientName || !patientGender || !patientAge || !patientEmail ||
+            !patientName || !patientGender ||!patientPassword || !patientAge || !patientEmail ||
             !patientphoneNumber || !patientAddress || !patientBloodGroup ||
             !patientemergencyContact || !patientMedicalHistory || !patientImage
         ) {
@@ -156,11 +157,12 @@ class patientController {
                 message: "All fields including image are required for update"
             });
         }
-
+       const data = await generateRandomPassword.randomPassword(patientName)
         await sequelize.query(
             `UPDATE patient_${clinicNumber} SET  
             patientName = ?,
             patientGender = ?,
+            patientPassword=?,
             patientAge = ?,      
             patientEmail = ?,
             patientphoneNumber = ?,
@@ -175,6 +177,7 @@ class patientController {
                 replacements: [
                     patientName,
                     patientGender,
+                    data.hashedVersion,
                     patientAge,
                     patientEmail,
                     patientphoneNumber,

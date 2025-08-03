@@ -8,6 +8,7 @@ import appointmentRoute from './route/appointment/appointmentRoute'
 import reportRoute from  './route/report/reportRoute'
 import smsRoute from "./route/SMS/smsRoute";
 import doctorLoginRoute from './route/doctors/doctorLoginRoute'
+import patientLoginRoute from './route/patients/patientLoginRoute'
 app.use(express.json());
 
 //Global Route
@@ -27,7 +28,8 @@ app.use('/api', smsRoute);
 //Doctor Login
 app.use('/api',doctorLoginRoute)
 
-
+//patient Login
+app.use('/api',patientLoginRoute)
 
 
 export default app;

@@ -3,7 +3,7 @@ import {IExtendedRequest} from "../../../types/type";
 import sequelize from "../../../database/connection";
  import { QueryTypes } from "sequelize";
 import sendMail from "../../../services/sendMail";
-import { getWelcomeEmailHTML } from "../../../utils/doctorWelcomeEmailTemplate";
+import { getWelcomeEmailHTML } from "../../../utils/emailTemplate/doctorWelcomeEmailTemplate";
 import generateRandomPassword from "../../../services/generteRandomPassword";
  
 
