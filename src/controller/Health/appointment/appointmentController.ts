@@ -150,34 +150,5 @@ console.log("Patient ID:", patientId);
         })
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 export default appointmentController

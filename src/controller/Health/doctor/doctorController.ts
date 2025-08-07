@@ -1,7 +1,7 @@
 import {Response} from "express";
 import {IExtendedRequest} from "../../../types/type";
 import sequelize from "../../../database/connection";
- import { QueryTypes } from "sequelize";
+import { QueryTypes } from "sequelize";
 import sendMail from "../../../services/sendMail";
 import { getWelcomeEmailHTML } from "../../../utils/emailTemplate/doctorWelcomeEmailTemplate";
 import generateRandomPassword from "../../../services/generteRandomPassword";
@@ -58,6 +58,7 @@ class doctorController {
           doctorIsAvailable,
           
         ],
+        type: QueryTypes.INSERT
       }
     );
  

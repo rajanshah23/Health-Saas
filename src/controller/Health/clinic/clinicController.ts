@@ -197,7 +197,7 @@ class clinicController {
   ) {
     const clinicNumber = req.user?.currentclinicNumber;
     await sequelize.query(`CREATE TABLE IF NOT EXISTS inventory_${clinicNumber}(
-  id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     medicineName VARCHAR(255) NOT NULL,
     quantity INT NOT NULL,
     price DECIMAL(10,2),
@@ -217,7 +217,7 @@ class clinicController {
   ) {
     const clinicNumber = req.user?.currentclinicNumber;
     await sequelize.query(`CREATE TABLE IF NOT EXISTS billing_${clinicNumber}(
-  id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     totalAmount DECIMAL(10,2) NOT NULL,
     discount DECIMAL(10,2) DEFAULT 0.00,
     tax DECIMAL(10,2) DEFAULT 0.00,
